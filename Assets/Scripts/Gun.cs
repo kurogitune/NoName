@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : MonoBehaviour
+public class Gun : MonoBehaviour//銃管理
 {
     [Header("連射")]
     public bool Rapidfire;
@@ -30,7 +30,7 @@ public class Gun : MonoBehaviour
         if (!Attck) return;
 
         BurstintervalT += Time.deltaTime;
-        if (BurstintervalT > Burstinterval)
+        if (BurstintervalT > Burstinterval)//連射処理
         {
             GameObject g = Instantiate(Bullet);
             g.transform.position = BulletPoz.position;
@@ -38,7 +38,7 @@ public class Gun : MonoBehaviour
             BurstintervalT = 0;
         }
 
-        if (!Rapidfire) KeyUP();
+        if (!Rapidfire) KeyUP();//連射武器では無い場合
     }
 
     public void Shot()
