@@ -28,6 +28,8 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
 
     [Header("ブーストゲージ消費量")]
     public float BoothConsumption;
+    [Header("ブーストゲームジャンプ消費量")]
+    public float BoothJunpConsumption;
     [Header("ブーストゲージ自動回復量")]
     public float BoothRecovery;
     [Header("能力ゲージ消費量")]//スキルにより消費量は変化
@@ -44,17 +46,21 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
     Rigidbody Rig;
     Key_Data Key;//キーコード
     Gun GunSy;//銃の管理システム
+    SkillData[] SkillList;//選択スキル 
     KeyCode Skillchange = KeyCode.V;//スキル切り替え
     KeyCode SkillUse = KeyCode.Q;//能力使用
-    UISystem UISy;//UI管理
+    KeyCode LookOnKey = KeyCode.Tab;//ロックオン
+    GameSystem GameSy;
     float X, Z;//移動用
+    float MousX, MousY;//マウスでの視点回転用
     float Speed;//移動速度
     int HP;//体力
     float BoothGage;//ブーストゲージ
     float AbilityGauge;//能力用ゲージ
     int SkillNo;//スキル番号
-    int MaxSkillCount = 4;//最大スキル個数
     float GageRecoveryTime;//回復時間管理用
+    bool LookON;//敵をロックしているか
+    GameObject LookOnObj;//ロックオンしているオブジェクト
     void Start()
     {
         //以下初期値代入
@@ -63,9 +69,8 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
         BoothGage = MaxBoothGage;
         AbilityGauge = MaxAbilityGage;
         //ここまで
-
-        UISy = GameObject.Find("UI").GetComponent<UISystem>();//UI管理取得
-        UISy.SkillChange(SkillNo);
+        GameSy = GameObject.Find("System").GetComponent<GameSystem>();
+        GameSy.SkillChange(SkillNo);
         Key = KeyDataSystem.Lord();//キーのデータを取得
         CameraObj = ObjDataGet.MainCameraObj();//カメラオブジェクトを取得
         Rig = GetComponent<Rigidbody>();
@@ -111,14 +116,15 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
         //ここまで
 
         //以下攻撃処理
-        if (Input.GetKeyDown(Key.Attac_Key)) GunSy.Shot();
+        if (Input.GetKeyDown(Key.Attac_Key)) GunSy.Shot(LookOnObj);
         else if (Input.GetKeyUp(Key.Attac_Key)) GunSy.KeyUP();
         //ここまで
 
         //以下ジャンプ処理
-        if (Input.GetKeyDown(Key.Junp_Key))//ジャンプ処理
+        if (Input.GetKeyDown(Key.Junp_Key)&BoothGage>BoothJunpConsumption)//ジャンプ処理
         {
-            Rig.AddForce(new Vector3(0,JunpP,0));
+            BoothGage -= BoothJunpConsumption;
+            Rig.AddForce(new Vector3(0,JunpP,0),ForceMode.Impulse);
         }
         //ここまで
 
@@ -126,8 +132,8 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
         if (Input.GetKeyDown(Skillchange))//スキル切り替え
         {
             SkillNo++;
-            if (SkillNo > MaxSkillCount) SkillNo = 1;
-            UISy.SkillChange(SkillNo);
+            if (SkillNo > SkillList.Length) SkillNo = 1;
+            GameSy.SkillChange(SkillNo);
         }
 
         if (Input.GetKeyDown(SkillUse)&AbilityGauge>AbilityConsumption)//スキル使用
@@ -136,11 +142,36 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
         }
         //ここまで
 
+        //以下視点管理
+
+        if (Input.GetKeyDown(LookOnKey))
+        {
+            LookON = !LookON;
+            if (!LookON)
+            {
+                LookOnObj = null;
+                transform.rotation=new Quaternion(0,transform.rotation.y,0,1);
+            }
+            else LookOnObj = GameObject.Find("VR_Player");
+        }
+
+        if (LookON)
+        {
+            transform.LookAt(LookOnObj.transform.position);
+        }
+        else
+        {
+            MousX = MoveKey.MousHorizontal();
+            MousY = MoveKey.MousVertical();
+            transform.Rotate(new Vector3(0,MousX,0)*Time.deltaTime*150);
+        }
+        //ここまで
+
 
         //以下UI表示管理にデータを代入
-        UISy.HPGageIN(MaxHP,HP);
-        UISy.BoothGageIN(MaxBoothGage,(int)BoothGage);
-        UISy.AbilityhGageIN(MaxAbilityGage,(int)AbilityGauge);
+        GameSy.HPGageIN(MaxHP,HP);
+        GameSy.BoothGageIN(MaxBoothGage,(int)BoothGage);
+        GameSy.AbilityhGageIN(MaxAbilityGage,(int)AbilityGauge);
     　　//ここまで
     }
 }

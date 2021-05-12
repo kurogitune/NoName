@@ -17,6 +17,7 @@ public class Gun : MonoBehaviour//銃管理
 
     bool Attck;//攻撃位置
     float BurstintervalT;//攻撃間隔
+    GameObject LookObj;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,15 +36,17 @@ public class Gun : MonoBehaviour//銃管理
             GameObject g = Instantiate(Bullet);
             g.transform.position = BulletPoz.position;
             g.GetComponent<Rigidbody>().AddForce(BulletPoz.transform.forward * Bulletspeed * Time.deltaTime);
+         //   if (LookObj != null) g.GetComponent<Bullet>().HomingDataIN(LookObj);
             BurstintervalT = 0;
         }
 
         if (!Rapidfire) KeyUP();//連射武器では無い場合
     }
 
-    public void Shot()
+    public void Shot(GameObject Obj)//砲撃処理
     {
         Attck = true;
+        LookObj = Obj;
     }
 
     public void KeyUP()
