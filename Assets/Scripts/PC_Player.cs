@@ -15,6 +15,8 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
     public float BoothSpeed;
     [Header("ジャンプ力")]
     public float JunpP;
+    [Header("カメラ回転測度")]
+    public float CameraRootSpeed;
 
     [Header("攻撃物")]
     public GameObject GunObj;
@@ -116,7 +118,7 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
         //ここまで
 
         //以下攻撃処理
-        if (Input.GetKeyDown(Key.Attac_Key)) GunSy.Shot(LookOnObj);
+        if (Input.GetKeyDown(Key.Attac_Key)) GunSy.Shot();
         else if (Input.GetKeyUp(Key.Attac_Key)) GunSy.KeyUP();
         //ここまで
 
@@ -163,7 +165,7 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
         {
             MousX = MoveKey.MousHorizontal();
             MousY = MoveKey.MousVertical();
-            transform.Rotate(new Vector3(0,MousX,0)*Time.deltaTime*150);
+            transform.Rotate(new Vector3(0,MousX,0)*Time.deltaTime* CameraRootSpeed);
         }
         //ここまで
 
