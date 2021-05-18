@@ -11,6 +11,10 @@ public class GameSystem : MonoBehaviour//ゲーム管理(通信処理＆制限�
     public BGMList BGMLis;
     [Header("SEリスト")]
     public SEList SELis;
+    [Header("使用機体リスト")]
+    public GameObject[] PlayerModelLis;
+    [Header("初期出現位置")]
+    public GameObject[] PlayerINPoz;
 
     [Header("開始カウントダウン")]
     public int Max_CountDownTime;
@@ -42,7 +46,6 @@ public class GameSystem : MonoBehaviour//ゲーム管理(通信処理＆制限�
     [Header("選択カラー")]
     public Color SelctColor;
 
-
     public  bool RoomMaster;//部屋の主か
     public bool EveryoneReady;//全員準備完了か
     bool GameStart;//ゲームを開始しているか
@@ -50,6 +53,8 @@ public class GameSystem : MonoBehaviour//ゲーム管理(通信処理＆制限�
     int TimeCount_Minutes;//制限時間分
     float TimeCount_Seconds;//制限時間秒
     float CountDownTime;//初期カウントダウン
+    int PlayerNo=1;//プレイヤー番号
+    int PlayerModelNo=1;//機体番号
     // Start is called before the first frame update
     void Start()
     {
@@ -58,6 +63,10 @@ public class GameSystem : MonoBehaviour//ゲーム管理(通信処理＆制限�
         CountDownTime = Max_CountDownTime;
         TimeCountIN(TimeCount_Minutes, TimeCount_Seconds);
         CounDownUIIN(CountDownTime.ToString("0"), false);
+
+        GameObject PlayerModel = Instantiate(PlayerModelLis[PlayerNo-1]);
+        PlayerModel.transform.position = PlayerINPoz[PlayerNo - 1].transform.position;
+        PlayerModel.transform.rotation = PlayerINPoz[PlayerNo - 1].transform.rotation;
     }
 
     // Update is called once per frame

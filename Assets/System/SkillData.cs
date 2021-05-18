@@ -23,7 +23,7 @@ public class SkillData : ScriptableObject
     public float Range;
 
     [Header("攻撃力")]
-    public float AttackP;
+    public float AttackUP_P;
     [Header("回復量")]
     public float RecoveRyamount;
 }

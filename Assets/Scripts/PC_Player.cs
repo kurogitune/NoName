@@ -48,7 +48,7 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
     Rigidbody Rig;
     Key_Data Key;//キーコード
     Gun GunSy;//銃の管理システム
-    SkillData[] SkillList;//選択スキル 
+    SkillData[] SkillList=new SkillData[4];//選択スキル 
     KeyCode Skillchange = KeyCode.V;//スキル切り替え
     KeyCode SkillUse = KeyCode.Q;//能力使用
     KeyCode LookOnKey = KeyCode.Tab;//ロックオン
@@ -146,7 +146,7 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
 
         //以下視点管理
 
-        if (Input.GetKeyDown(LookOnKey))
+        if (Input.GetKeyDown(LookOnKey))//ロックオン
         {
             LookON = !LookON;
             if (!LookON)
@@ -157,7 +157,7 @@ public class PC_Player : MonoBehaviour//PCでの操作するプレイヤー
             else LookOnObj = GameObject.Find("VR_Player");
         }
 
-        if (LookON)
+        if (LookON)//ロックオン処理
         {
             transform.LookAt(LookOnObj.transform.position);
         }
